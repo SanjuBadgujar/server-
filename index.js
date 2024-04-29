@@ -1,24 +1,85 @@
-const http = require('http'); // module
 
+const http = require('http'); // module
 const app = require('./app'); // files
+const { log } = require('console');
+const Model = require('./model/model');
 
 app.set('port', 3000);
-app.get('/get', (req, res) => {
-    res.json({ message: 'Hello, World!' });
+
+app.get('/student', async (req, res) => {
+  try{
+      const data = await Model.find();
+      res.json(data)
+  }
+  catch(error){
+      res.status(500).json({message: error.message})
+  }
+})
+app.put('/student/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const newData = req.body;
+
+    const updatedData = await Model.findByIdAndUpdate(id, newData, { new: true });
+    
+    if (!updatedData) {
+      return res.status(404).json({ message: "Data not found" });
+    }
+
+    res.json(updatedData);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.patch('/student/:id', async (req, res) => {
+  try {
+      const id = req.params.id;
+      const updatedData = req.body;
+      const options = { new: true };
+
+      const result = await Model.findByIdAndUpdate(
+          id, updatedData, options
+      )
+
+      res.send(result)
+  }
+  catch (error) {
+      res.status(400).json({ message: error.message })
+  }
+})
+app.delete('/student/:id', async (req, res) => {
+  try {
+      const id = req.params.id;
+      const data = await Model.findByIdAndDelete(id)
+      res.send(`Document with ${data.name} has been deleted..`)
+  }
+  catch (error) {
+      res.status(400).json({ message: error.message })
+  }
+})
+app.post('/student', async (req, res) => {
+  const data = new Model({
+      name: req.body.name,
+      age: req.body.age
+      
   });
-  // post
-let todos = [];
+ 
+  try {
+    const dataToSave = await data.save();
+    console.log('Data saved successfully:', dataToSave);
+    res.status(200).json(dataToSave)
+}
+catch (error) {
+   console.log(error);
+    res.status(400).json({message: error.message})
+}
+})
 
-app.get('/api/todos', (req, res) => {
-  res.json(todos);
-});
 
-app.post('/api/todos', (req, res) => {
-  const newTodo = req.body;
-  todos.push(newTodo);
-  res.status(201).json(newTodo);
-});
 const server = http.createServer(app);
 server.listen(3000);
+
+
 
 console.log("server is start");
