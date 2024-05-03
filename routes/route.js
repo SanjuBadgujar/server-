@@ -1,5 +1,5 @@
 const express = require('express');
-const Model = require('../model/model');
+const Student = require('../model/model');
 
 const router = express.Router()
 
@@ -7,7 +7,7 @@ module.exports = router;
 
 router.get('/student', async (req, res) => {
     try{
-        const data = await Model.find();
+        const data = await Student.find();
         res.json({data:data,message:"get"})
     }
     catch(error){
@@ -19,7 +19,7 @@ router.get('/student', async (req, res) => {
       const { id } = req.params;
       const newData = req.body;
   
-      const updatedData = await Model.findByIdAndUpdate(id, newData, { new: true });
+      const updatedData = await Student.findByIdAndUpdate(id, newData, { new: true });
       
       if (!updatedData) {
         return res.status(404).json({ message: "Data not found" });
@@ -37,7 +37,7 @@ router.get('/student', async (req, res) => {
         const updatedData = req.body;
         const options = { new: true };
   
-        const result = await Model.findByIdAndUpdate(
+        const result = await Student.findByIdAndUpdate(
             id, updatedData, options
         )
   
@@ -50,7 +50,7 @@ router.get('/student', async (req, res) => {
   router.delete('/student/:id', async (req, res) => {
     try {
         const id = req.params.id;
-        const data = await Model.findByIdAndDelete(id)
+        const data = await Student.findByIdAndDelete(id)
         res.send(`Document with ${data.name} has been deleted..`)
     }
     catch (error) {
@@ -58,9 +58,10 @@ router.get('/student', async (req, res) => {
     }
   })
   router.post('/student', async (req, res) => {
-    const data = new Model({
+    const data = new Student({
         name: req.body.name,
-        age: req.body.age
+        age: req.body.age,
+        email:req.body.email
         
     });
    

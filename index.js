@@ -48,7 +48,7 @@ app.post("/login",
                     email: existingUser.email
                 },
                 "secretkeyappearshere",
-                { expiresIn: "120s" }
+                { expiresIn: "1hr" }
             );
         } catch (err) {
             console.log(err);
@@ -102,7 +102,7 @@ app.post("/signup",
                     email: newUser.email
                 },
                 "secretkeyappearshere",
-                { expiresIn: "120s" }
+                { expiresIn: "1hr" }
             );
         } catch (err) {
             const error =
